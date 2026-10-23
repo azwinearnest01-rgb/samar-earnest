@@ -1,0 +1,267 @@
+@import "tailwindcss";
+
+/*
+ * Samar & Earnest — design tokens.
+ * Brand colours and type live here (and are mirrored in src/theme/tokens.ts
+ * for non-CSS consumers such as the Open Graph image). Change them in both.
+ */
+@theme {
+  /* Palette */
+  --color-forest: #17211d;
+  --color-forest-raised: #1d2924;
+  --color-ivory: #f2ecdd;
+  --color-paper: #eae3d2;
+  --color-ink: #171815;
+  --color-oxblood: #5b302f;
+  --color-brass: #a68a5b;
+  --color-brass-deep: #7a6438;
+  --color-stone: #a59e90;
+  --color-stone-deep: #66614f;
+
+  /* Typefaces: serif = institution, sans = infrastructure */
+  --font-display: var(--font-caslon-display), "Libre Caslon Display", Georgia, "Times New Roman", serif;
+  --font-serif: var(--font-caslon-text), "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid editorial scale */
+  --text-display-1: clamp(2.75rem, 1.05rem + 6.9vw, 8.5rem);
+  --text-display-1--line-height: 0.98;
+  --text-display-1--letter-spacing: -0.015em;
+  --text-display-2: clamp(2.25rem, 1.25rem + 4.1vw, 5.75rem);
+  --text-display-2--line-height: 1.02;
+  --text-display-2--letter-spacing: -0.01em;
+  --text-display-3: clamp(1.875rem, 1.3rem + 2.45vw, 3.875rem);
+  --text-display-3--line-height: 1.08;
+  --text-display-4: clamp(1.5rem, 1.2rem + 1.25vw, 2.5rem);
+  --text-display-4--line-height: 1.16;
+  --text-lead: clamp(1.125rem, 1.04rem + 0.38vw, 1.4rem);
+  --text-lead--line-height: 1.6;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.72;
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.4;
+  --text-meta--letter-spacing: 0.18em;
+
+  --breakpoint-3xl: 120rem;
+
+  --ease-estate: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-page-in: page-in 0.6s var(--ease-estate) both;
+  --animate-rise: rise 1s var(--ease-estate) both;
+  --animate-unveil: unveil 1.3s var(--ease-estate) both;
+
+  @keyframes page-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes rise {
+    from {
+      transform: translateY(105%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes unveil {
+    from {
+      transform: scaleY(1);
+    }
+    to {
+      transform: scaleY(0);
+    }
+  }
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  :root {
+    --focus-ring: var(--color-oxblood);
+    --header-height: 4.5rem;
+    color-scheme: light;
+  }
+
+  @media (min-width: 64rem) {
+    :root {
+      --header-height: 5.5rem;
+    }
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: calc(var(--header-height) + 1.5rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-forest);
+    color: var(--color-ivory);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+/* ---------- Brand utilities ---------- */
+
+/* Dark (Forest) context: inverts focus ring and selection */
+@utility theme-dark {
+  --focus-ring: var(--color-brass);
+  background-color: var(--color-forest);
+  color: var(--color-ivory);
+  & ::selection {
+    background-color: var(--color-ivory);
+    color: var(--color-forest);
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-meta);
+  line-height: var(--text-meta--line-height);
+  letter-spacing: var(--text-meta--letter-spacing);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Animated underline for text links */
+@utility link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.45s var(--ease-estate);
+  &:hover,
+  &:focus-visible,
+  &[aria-current="page"] {
+    background-size: 100% 1px;
+  }
+}
+
+/* Persistent underline that thins on hover (inline prose links) */
+@utility link-prose {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  transition: text-decoration-color 0.3s ease;
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* Subtle paper grain for ivory/paper sections (static, no repaint cost) */
+@utility texture-paper {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Long-form article typography */
+@utility prose-estate {
+  font-size: 1.125rem;
+  line-height: 1.78;
+  color: var(--color-ink);
+  & > * + * {
+    margin-top: 1.4em;
+  }
+  & h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-display-4);
+    line-height: var(--text-display-4--line-height);
+    margin-top: 2.2em;
+  }
+  & h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-top: 2em;
+  }
+  & blockquote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.45;
+    border-left: 1px solid var(--color-brass);
+    padding-left: 1.5rem;
+    margin-block: 2em;
+  }
+  & ul {
+    list-style: none;
+    padding: 0;
+  }
+  & ul li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  & ul li + li {
+    margin-top: 0.6em;
+  }
+  & ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.85em;
+    width: 0.65rem;
+    height: 1px;
+    background: var(--color-brass-deep);
+  }
+}
+
+/* ---------- Motion preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
